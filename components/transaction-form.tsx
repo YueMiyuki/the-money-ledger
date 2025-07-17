@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import type { Category } from "@/lib/database";
 import * as LucideIcons from "lucide-react";
 
@@ -42,10 +42,29 @@ export function TransactionForm({
   onSubmit,
 }: TransactionFormProps) {
   const [open, setOpen] = useState(false);
-  const [type, setType] = useState<"income" | "expense">("expense");
+  const [type, setType] = useState<"income" | "expense">("income");
   const [categoryId, setCategoryId] = useState<string>("");
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
+
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.07,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { ease: "easeOut", duration: 0.3 },
+    },
+  };
 
   const filteredCategories = categories.filter((cat) => cat.type === type);
 
@@ -117,6 +136,7 @@ export function TransactionForm({
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.1 }}
+              className="pb-4"
             >
               <DialogTitle>Add Transaction</DialogTitle>
             </motion.div>
@@ -147,94 +167,93 @@ export function TransactionForm({
                 </TabsList>
               </motion.div>
 
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={type}
-                  initial={{ opacity: 0, x: type === "income" ? 20 : -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: type === "income" ? -20 : 20 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <TabsContent value={type} className="space-y-4">
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.1 }}
-                      className="space-y-2"
-                    >
-                      <Label htmlFor="category">Category</Label>
-                      <Select value={categoryId} onValueChange={setCategoryId}>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select a category" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {filteredCategories.map((category) => (
-                            <SelectItem
-                              key={category.id}
-                              value={category.id.toString()}
-                            >
-                              <div className="flex items-center space-x-2">
-                                <div style={{ color: category.color }}>
-                                  {getIcon(category.icon)}
+              <div className="relative h-[340px]">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={type}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -15 }}
+                    transition={{
+                      duration: 0.25,
+                      ease: "easeInOut",
+                    }}
+                    className="absolute w-full"
+                  >
+                    <TabsContent value={type}>
+                      <motion.div
+                        className="space-y-4"
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                      >
+                        <motion.div variants={itemVariants} className="space-y-2">
+                          <Label htmlFor="category">Category</Label>
+                          <Select
+                            value={categoryId}
+                            onValueChange={setCategoryId}
+                          >
+                            <SelectTrigger>
+                              <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {filteredCategories.map((category) => (
+                                <SelectItem
+                                  key={category.id}
+                                  value={category.id.toString()}
+                                >
+                                  <div className="flex items-center space-x-2">
+                                    <div style={{ color: category.color }}>
+                                    {getIcon(category.icon)}
+                                  </div>
+                                  <span>{category.name}</span>
                                 </div>
-                                <span>{category.name}</span>
-                              </div>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </motion.div>
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </motion.div>
 
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.2 }}
-                      className="space-y-2"
-                    >
-                      <Label htmlFor="amount">Amount</Label>
-                      <Input
-                        id="amount"
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                        required
-                      />
-                    </motion.div>
+                      <motion.div variants={itemVariants} className="space-y-2">
+                        <Label htmlFor="amount">Amount</Label>
+                        <Input
+                          id="amount"
+                          type="number"
+                          step="0.01"
+                          placeholder="0.00"
+                          value={amount}
+                          onChange={(e) => setAmount(e.target.value)}
+                          required
+                        />
+                      </motion.div>
 
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.3 }}
-                      className="space-y-2"
-                    >
-                      <Label htmlFor="description">
-                        Description (Optional)
-                      </Label>
-                      <Textarea
-                        id="description"
-                        placeholder="Add a note..."
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                      />
-                    </motion.div>
+                      <motion.div variants={itemVariants} className="space-y-2">
+                        <Label htmlFor="description">
+                          Description (Optional)
+                        </Label>
+                        <Textarea
+                          id="description"
+                          placeholder="Add a note..."
+                          value={description}
+                          onChange={(e) => setDescription(e.target.value)}
+                        />
+                      </motion.div>
 
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.4 }}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                    >
-                      <Button type="submit" className="w-full">
-                        Add {type === "income" ? "Income" : "Expense"}
-                      </Button>
+                      <motion.div
+                        variants={itemVariants}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <Button type="submit" className="w-full">
+                          Add {type === "income" ? "Income" : "Expense"}
+                        </Button>
+                      </motion.div>
                     </motion.div>
                   </TabsContent>
                 </motion.div>
               </AnimatePresence>
-            </Tabs>
+            </div>
+          </Tabs>
           </form>
         </motion.div>
       </DialogContent>
