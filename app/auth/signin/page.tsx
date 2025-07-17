@@ -46,8 +46,8 @@ export default function SignIn() {
             </motion.div>
             <CardTitle className="text-2xl">Welcome to MoneyLedger</CardTitle>
             <CardDescription>
-              Track your income and expenses with ease.  
-              Sign in with Discord to get started.
+              Track your income and expenses with ease. Sign in with Discord to
+              get started.
             </CardDescription>
           </CardHeader>
           <CardContent>

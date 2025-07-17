@@ -29,30 +29,69 @@ export function TransactionList({
     }).format(amount);
   };
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("en-US", {
+  const formatDateTime = (dateString: string) => {
+    return new Date(dateString).toLocaleString("en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   return (
-    <div className="space-y-4">
-      <AnimatePresence>
+    <motion.div
+      className="space-y-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <AnimatePresence mode="popLayout">
         {transactions.map((transaction, index) => (
           <motion.div
             key={transaction.id}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ delay: index * 0.1 }}
+            layout
+            initial={{ opacity: 0, x: -100, scale: 0.8 }}
+            animate={{
+              opacity: 1,
+              x: 0,
+              scale: 1,
+              transition: {
+                delay: index * 0.05,
+                type: "spring",
+                stiffness: 100,
+              },
+            }}
+            exit={{
+              opacity: 0,
+              x: 100,
+              scale: 0.8,
+              transition: { duration: 0.3 },
+            }}
+            whileHover={{
+              scale: 1.02,
+              y: -2,
+              transition: { duration: 0.2 },
+            }}
+            whileTap={{ scale: 0.98 }}
           >
-            <Card className="hover:shadow-md transition-shadow">
+            <Card className="hover:shadow-lg transition-all duration-300 cursor-pointer border hover:border-primary/30">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center space-x-3">
-                    <div
+                    <motion.div
+                      initial={{ scale: 0, rotate: -180 }}
+                      animate={{ scale: 1, rotate: 0 }}
+                      transition={{
+                        delay: index * 0.05 + 0.2,
+                        type: "spring",
+                        stiffness: 200,
+                      }}
+                      whileHover={{
+                        rotate: 360,
+                        scale: 1.1,
+                        transition: { duration: 0.5 },
+                      }}
                       className="p-2 rounded-full"
                       style={{
                         backgroundColor: `${transaction.category.color}20`,
@@ -61,45 +100,74 @@ export function TransactionList({
                       <div style={{ color: transaction.category.color }}>
                         {getIcon(transaction.category.icon)}
                       </div>
-                    </div>
-                    <div>
+                    </motion.div>
+                    <motion.div
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 + 0.3 }}
+                    >
                       <p className="font-medium">{transaction.category.name}</p>
                       {transaction.description && (
-                        <p className="text-sm text-muted-foreground">
+                        <motion.p
+                          className="text-sm text-muted-foreground"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{ delay: index * 0.05 + 0.4 }}
+                        >
                           {transaction.description}
-                        </p>
+                        </motion.p>
                       )}
-                      <p className="text-xs text-muted-foreground">
-                        {formatDate(transaction.date)}
-                      </p>
-                    </div>
+                      <motion.p
+                        className="text-xs text-muted-foreground"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: index * 0.05 + 0.5 }}
+                      >
+                        {formatDateTime(transaction.created_at)}
+                      </motion.p>
+                    </motion.div>
                   </div>
 
-                  <div className="flex items-center space-x-2">
-                    <Badge
-                      variant={
-                        transaction.type === "income"
-                          ? "default"
-                          : "destructive"
-                      }
-                      className={
-                        transaction.type === "income"
-                          ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
-                          : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"
-                      }
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.05 + 0.3 }}
+                    className="flex items-center space-x-2"
+                  >
+                    <motion.div
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      {transaction.type === "income" ? "+" : "-"}
-                      {formatCurrency(transaction.amount)}
-                    </Badge>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onDelete(transaction.id)}
-                      className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                      <Badge
+                        variant={
+                          transaction.type === "income"
+                            ? "default"
+                            : "destructive"
+                        }
+                        className={
+                          transaction.type === "income"
+                            ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                            : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-100"
+                        }
+                      >
+                        {transaction.type === "income" ? "+" : "-"}
+                        {formatCurrency(transaction.amount)}
+                      </Badge>
+                    </motion.div>
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      whileTap={{ scale: 0.9 }}
                     >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => onDelete(transaction.id)}
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive transition-colors duration-200"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </motion.div>
+                  </motion.div>
                 </div>
               </CardContent>
             </Card>
@@ -109,15 +177,26 @@ export function TransactionList({
 
       {transactions.length === 0 && (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, type: "spring" }}
           className="text-center py-12"
         >
-          <p className="text-muted-foreground">
+          <motion.p
+            className="text-muted-foreground text-lg"
+            animate={{
+              y: [0, -10, 0],
+              transition: {
+                duration: 2,
+                repeat: Number.POSITIVE_INFINITY,
+                ease: "easeInOut",
+              },
+            }}
+          >
             No transactions yet. Add your first transaction!
-          </p>
+          </motion.p>
         </motion.div>
       )}
-    </div>
+    </motion.div>
   );
 }

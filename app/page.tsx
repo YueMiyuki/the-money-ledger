@@ -53,7 +53,6 @@ export default function Home() {
     categoryId: number;
     amount: number;
     description: string;
-    date: string;
   }) => {
     try {
       const response = await fetch("/api/transactions", {
@@ -88,8 +87,16 @@ export default function Home() {
 
   if (status === "loading" || loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{
+            duration: 1,
+            repeat: Number.POSITIVE_INFINITY,
+            ease: "linear",
+          }}
+          className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"
+        />
       </div>
     );
   }
@@ -99,32 +106,69 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-background"
+    >
       <Navbar />
 
       <main className="container mx-auto px-4 py-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
           className="space-y-8"
         >
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-            <p className="text-muted-foreground">
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+          >
+            <motion.h1
+              className="text-3xl font-bold tracking-tight"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              Dashboard
+            </motion.h1>
+            <motion.p
+              className="text-muted-foreground"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
               Welcome back, {session.user?.name}! Here's your financial
               overview.
-            </p>
-          </div>
+            </motion.p>
+          </motion.div>
 
-          <DashboardStats transactions={transactions} />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <DashboardStats transactions={transactions} />
+          </motion.div>
 
-          <div>
-            <h2 className="text-2xl font-semibold mb-4">Recent Transactions</h2>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
+            <motion.h2
+              className="text-2xl font-semibold mb-4"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.2 }}
+            >
+              All Transactions
+            </motion.h2>
             <TransactionList
               transactions={transactions}
               onDelete={handleDeleteTransaction}
             />
-          </div>
+          </motion.div>
         </motion.div>
 
         <TransactionForm
@@ -132,6 +176,6 @@ export default function Home() {
           onSubmit={handleAddTransaction}
         />
       </main>
-    </div>
+    </motion.div>
   );
 }

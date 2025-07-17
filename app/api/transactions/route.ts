@@ -19,7 +19,7 @@ export async function GET() {
     FROM transactions t
     JOIN categories c ON t.category_id = c.id
     WHERE t.user_id = ?
-    ORDER BY t.date DESC, t.created_at DESC
+    ORDER BY t.created_at DESC
   `,
     )
     .all(session.user.id);
@@ -44,13 +44,13 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { type, categoryId, amount, description, date } = await request.json();
+  const { type, categoryId, amount, description } = await request.json();
 
   const db = getDatabase();
 
   const insertTransaction = db.prepare(`
-    INSERT INTO transactions (user_id, category_id, amount, description, date, type)
-    VALUES (?, ?, ?, ?, ?, ?)
+    INSERT INTO transactions (user_id, category_id, amount, description, date, type, created_at)
+    VALUES (?, ?, ?, ?, DATE('now'), ?, CURRENT_TIMESTAMP)
   `);
 
   const result = insertTransaction.run(
@@ -58,7 +58,6 @@ export async function POST(request: NextRequest) {
     categoryId,
     amount,
     description || null,
-    date,
     type,
   );
 
