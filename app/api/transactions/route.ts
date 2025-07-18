@@ -61,6 +61,8 @@ export async function POST(request: NextRequest) {
     type,
   );
 
+  db.pragma("wal_checkpoint(RESTART)");
+
   return NextResponse.json({ id: result.lastInsertRowid });
 }
 
@@ -89,6 +91,8 @@ export async function DELETE(request: NextRequest) {
   `);
 
   deleteTransaction.run(id, session.user.id);
+
+  db.pragma("wal_checkpoint(RESTART)");
 
   return NextResponse.json({ success: true });
 }

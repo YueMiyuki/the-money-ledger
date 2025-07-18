@@ -29,6 +29,7 @@ export const authOptions: NextAuthOptions = {
             : null,
           discordProfile.email,
         );
+        db.pragma("wal_checkpoint(RESTART)");
       }
       return true;
     },
