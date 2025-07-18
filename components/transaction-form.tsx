@@ -187,7 +187,10 @@ export function TransactionForm({
                         initial="hidden"
                         animate="visible"
                       >
-                        <motion.div variants={itemVariants} className="space-y-2">
+                        <motion.div
+                          variants={itemVariants}
+                          className="space-y-2"
+                        >
                           <Label htmlFor="category">Category</Label>
                           <Select
                             value={categoryId}
@@ -204,56 +207,62 @@ export function TransactionForm({
                                 >
                                   <div className="flex items-center space-x-2">
                                     <div style={{ color: category.color }}>
-                                    {getIcon(category.icon)}
+                                      {getIcon(category.icon)}
+                                    </div>
+                                    <span>{category.name}</span>
                                   </div>
-                                  <span>{category.name}</span>
-                                </div>
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
-                      </motion.div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </motion.div>
 
-                      <motion.div variants={itemVariants} className="space-y-2">
-                        <Label htmlFor="amount">Amount</Label>
-                        <Input
-                          id="amount"
-                          type="number"
-                          step="0.01"
-                          placeholder="0.00"
-                          value={amount}
-                          onChange={(e) => setAmount(e.target.value)}
-                          required
-                        />
-                      </motion.div>
+                        <motion.div
+                          variants={itemVariants}
+                          className="space-y-2"
+                        >
+                          <Label htmlFor="amount">Amount</Label>
+                          <Input
+                            id="amount"
+                            type="number"
+                            step="0.01"
+                            placeholder="0.00"
+                            value={amount}
+                            onChange={(e) => setAmount(e.target.value)}
+                            required
+                          />
+                        </motion.div>
 
-                      <motion.div variants={itemVariants} className="space-y-2">
-                        <Label htmlFor="description">
-                          Description (Optional)
-                        </Label>
-                        <Textarea
-                          id="description"
-                          placeholder="Add a note..."
-                          value={description}
-                          onChange={(e) => setDescription(e.target.value)}
-                        />
-                      </motion.div>
+                        <motion.div
+                          variants={itemVariants}
+                          className="space-y-2"
+                        >
+                          <Label htmlFor="description">
+                            Description (Optional)
+                          </Label>
+                          <Textarea
+                            id="description"
+                            placeholder="Add a note..."
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                          />
+                        </motion.div>
 
-                      <motion.div
-                        variants={itemVariants}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <Button type="submit" className="w-full">
-                          Add {type === "income" ? "Income" : "Expense"}
-                        </Button>
+                        <motion.div
+                          variants={itemVariants}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <Button type="submit" className="w-full">
+                            Add {type === "income" ? "Income" : "Expense"}
+                          </Button>
+                        </motion.div>
                       </motion.div>
-                    </motion.div>
-                  </TabsContent>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </Tabs>
+                    </TabsContent>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </Tabs>
           </form>
         </motion.div>
       </DialogContent>

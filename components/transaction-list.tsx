@@ -154,19 +154,22 @@ export function TransactionList({
                         {formatCurrency(transaction.amount)}
                       </Badge>
                     </motion.div>
-                    <motion.div
-                      whileHover={{ scale: 1.1, rotate: 5 }}
-                      whileTap={{ scale: 0.9 }}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onDelete(transaction.id);
+                      }}
+                      className="h-8 w-8 text-muted-foreground hover:text-destructive transition-colors duration-200"
                     >
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => onDelete(transaction.id)}
-                        className="h-8 w-8 text-muted-foreground hover:text-destructive transition-colors duration-200"
+                      <motion.div
+                        whileHover={{ scale: 1.1, rotate: 5 }}
+                        whileTap={{ scale: 0.9 }}
                       >
                         <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </motion.div>
+                      </motion.div>
+                    </Button>
                   </motion.div>
                 </div>
               </CardContent>

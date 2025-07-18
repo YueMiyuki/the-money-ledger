@@ -65,7 +65,6 @@ export function ThemeProvider({
       root.classList.add(theme);
     }
 
-   
     root.style.colorScheme = theme === "system" ? systemTheme : theme;
   }, [theme, mounted, enableSystem]);
 
